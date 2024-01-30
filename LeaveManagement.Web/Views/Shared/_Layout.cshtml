@@ -10,9 +10,9 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">LeaveManagement.Web</a>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm bg-dark border-bottom border-body box-shadow mb-3" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">LeaveManagement.Web - Net 8</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,11 +20,28 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-white" asp-area="" asp-controller="" asp-action="">Apply For Leave</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="" asp-action="">My Leave</a>
+                        </li>
+
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropDown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Leave Management
+                            </a>
+
+                            <ul class="dropdown-menu bg-dark " aria-labelledby="navbarDropDown">
+                                <li><a class="dropdown-item text-white" href="#">Leave Types</a></li>
+                                <li><a class="dropdown-item text-white" href="#">Leave Allocations</a></li>
+                                <li><a class="dropdown-item text-white" href="#">Leave Requests</a></li>
+                                <li><a class="dropdown-item text-white" href="#">Employee Management</a></li>
+                            </ul>
+                        </div>
+
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -39,7 +56,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - LeaveManagement.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - LeaveManagement.Web - Net 8 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
