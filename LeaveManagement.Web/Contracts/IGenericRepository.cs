@@ -4,6 +4,7 @@
     {
         Task<T> GetAsync(int? id);
         Task<T> AddAsync(T entity);
+        Task AddRangeAsync(List<T> entities);
         Task<List<T>> GetAllAsync();
         Task<int> GetCountAsync();
         Task<bool> Exists(int id);
