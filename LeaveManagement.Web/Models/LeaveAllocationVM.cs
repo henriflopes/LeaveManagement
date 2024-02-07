@@ -16,6 +16,6 @@ namespace LeaveManagement.Web.Models
         [Required]
         public int Period { get; set; }
 
-        public LeaveTypeVM? LeaveType { get; set; }
+        public LeaveTypeVM LeaveType { get; set; }
     }
 }

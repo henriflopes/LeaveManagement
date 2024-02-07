@@ -66,7 +66,7 @@ namespace LeaveManagement.Web.Controllers
         }
 
         // GET: LeaveRequests/Create
-        public async Task<IActionResult> CreateAsync()
+        public IActionResult CreateAsync()
         {
             var model = new LeaveRequestCreateVM {
                 LeaveTypes = new SelectList(_context.LeaveTypes, "Id", "Name")
@@ -92,7 +92,7 @@ namespace LeaveManagement.Web.Controllers
                     ModelState.AddModelError(string.Empty,  "You Have Exceeded Your Allocation With This Request.");
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 ModelState.AddModelError(string.Empty, "An Error Has Ocurred. Please Try Again Later");
             }
@@ -110,7 +110,7 @@ namespace LeaveManagement.Web.Controllers
 			{
 				await _leaveRequestRepository.CancelLeaveRequest(id);
 			}
-			catch (Exception ex)
+			catch
 			{
 				throw;
 			}

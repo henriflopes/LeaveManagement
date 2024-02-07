@@ -1,26 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
 namespace LeaveManagement.Web.Models
 {
-    public class LeaveRequestCreateVM : IValidatableObject
+	public class LeaveRequestCreateVM : IValidatableObject
     {
         [Required]
         [Display(Name = "Start Date")]
-        public DateTime? StartDate { get; set; }
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+		[DataType(DataType.Date)]
+		public DateTime? StartDate { get; set; }
 		[Required]
 		[Display(Name = "End Date")]
+		[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}")]
+		[DataType(DataType.Date)]
 		public DateTime? EndDate { get; set; }
 		[Display(Name = "Number Of Days")]
 		public int NumberOfDays { get; set; }
-        public int AvailableDays { get; set; }
         [Required]
         [Display(Name = "Leave Type")]
         public int LeaveTypeId { get; set; }
-        public SelectList? LeaveTypes  { get; set; }
+        public SelectList LeaveTypes  { get; set; }
         [Display(Name = "Request Comments")]
-        public string? RequestComments { get; set; }
+        public string RequestComments { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -34,12 +36,6 @@ namespace LeaveManagement.Web.Models
             {
                 yield return new ValidationResult("Comments Are Too Long", new[] { nameof(RequestComments) });
             }
-
-            if (AvailableDays > NumberOfDays)
-            {
-                yield return new ValidationResult("You Haven't Available Days For This Request.", new[] { nameof(StartDate), nameof(EndDate) });
-            }
-
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagement.Web.Contracts;
 using LeaveManagement.Web.Data;
 using LeaveManagement.Web.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace LeaveManagement.Web.Repositories
 {
@@ -15,14 +15,16 @@ namespace LeaveManagement.Web.Repositories
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly ILeaveAllocationRepository _leaveAllocationRepository;
 		private readonly UserManager<Employee> _userManager;
+		private readonly AutoMapper.IConfigurationProvider _configurationProvider;
 
-		public LeaveRequestRepository(ApplicationDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, ILeaveAllocationRepository leaveAllocationRepository, UserManager<Employee> userManager) : base(context)
+		public LeaveRequestRepository(ApplicationDbContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, ILeaveAllocationRepository leaveAllocationRepository, UserManager<Employee> userManager, AutoMapper.IConfigurationProvider configurationProvider) : base(context)
 		{
 			_context = context;
 			_mapper = mapper;
 			_httpContextAccessor = httpContextAccessor;
 			_leaveAllocationRepository = leaveAllocationRepository;
 			_userManager = userManager;
+			_configurationProvider = configurationProvider;
 		}
 
 		public async Task CancelLeaveRequest(int leaveRequestId)
@@ -77,7 +79,10 @@ namespace LeaveManagement.Web.Repositories
 
 		public async Task<AdminLeaveRequestsViewVM> GetAdminLeaveRequestList()
 		{
-			var leaveRequests = await _context.LeaveRequests.Include(q => q.LeaveType).ToListAsync();
+			var leaveRequests = await _context.LeaveRequests
+					.Include(q => q.LeaveType)
+					.ProjectTo<LeaveRequestVM>(_configurationProvider)
+					.ToListAsync();
 
 			var model = new AdminLeaveRequestsViewVM
 			{
@@ -85,34 +90,36 @@ namespace LeaveManagement.Web.Repositories
 				ApprovedRequests = leaveRequests.Count(q => q.Approved == true),
 				PendingRequests = leaveRequests.Count(q => q.Approved == null),
 				RejectedRequests = leaveRequests.Count(q => q.Approved == false),
-				LeaveRequest = _mapper.Map<List<LeaveRequestVM>>(leaveRequests)
+				LeaveRequest = leaveRequests
 			};
 
 			foreach (var leaveRequest in model.LeaveRequest)
 			{
-
 				leaveRequest.Employee = _mapper.Map<EmployeeListVM>(await _userManager.FindByIdAsync(leaveRequest.RequestingEmployeeId));
 			}
-
 
 			return model;
 		}
 
-		public async Task<List<LeaveRequest>> GetAllByIdAsync(string employeeId)
+		public async Task<List<LeaveRequestVM>> GetAllByIdAsync(string employeeId)
 		{
-			return await _context.LeaveRequests.Where(q => q.RequestingEmployeeId == employeeId).ToListAsync();
+			return await _context.LeaveRequests
+				.Where(q => q.RequestingEmployeeId == employeeId)  
+				.ProjectTo<LeaveRequestVM>(_configurationProvider)
+				.ToListAsync();
 		}
 
-		public async Task<LeaveRequestVM?> GetLeaveRequestAsync(int? id)
+		public async Task<LeaveRequestVM> GetLeaveRequestAsync(int? id)
 		{
 			var leaveRequest = await _context.LeaveRequests
 				.Include(q => q.LeaveType)
+				.ProjectTo<LeaveRequestVM>(_configurationProvider)
 				.FirstOrDefaultAsync(q => q.Id == id);
 
 
 			if (leaveRequest == null) { return null; }
 
-			var model = _mapper.Map<LeaveRequestVM>(leaveRequest);
+			var model = leaveRequest;
 			model.Employee = _mapper.Map<EmployeeListVM>(await _userManager.FindByIdAsync(leaveRequest?.RequestingEmployeeId));
 			return model;
 		}
@@ -121,7 +128,7 @@ namespace LeaveManagement.Web.Repositories
 		{
 			var user = await _userManager.GetUserAsync(_httpContextAccessor?.HttpContext?.User);
 			var allocations = await _leaveAllocationRepository.GetAllocationsByEmployee(user.Id);
-			var allRequests = _mapper.Map<List<LeaveRequestVM>>(await GetAllByIdAsync(user.Id));
+			var allRequests = await GetAllByIdAsync(user.Id);
 
 			allRequests.ForEach(q => { q.NumberOfDays = (int)((q.EndDate.Value - q.StartDate.Value).TotalDays) + 1; });
 
