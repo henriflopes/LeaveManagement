@@ -1,0 +1,280 @@
+﻿@model EmployeeLeaveRequestViewVM
+
+@{
+	ViewData["Title"] = "My Leave";
+}
+
+<div class="card">
+	<div class="card-header">
+		<h4>Leave Allocations</h4>
+	</div>
+	<ul class="list-group list-group-flush">
+		<li class="list-group-item">
+			<div class="row">
+				<div class="col">Leave Name</div>
+				<div class="col">Original Days</div>
+				<div class="col">Curent Allcation</div>
+		</li>
+		@foreach (var allocation in Model.LeaveAllocations)
+		{
+			<li class="list-group-item">
+
+				<div class="row">
+					<div class="col"><h6>@allocation.LeaveType.Name</h6></div>
+					<div class="col">
+						<button type="button" class="btn btn-primary">
+							Allocated Days <span class="badge text-bg-secondary bg-info">@allocation.LeaveType.DefaultDays</span>
+						</button>
+					</div>
+					<div class="col">
+						<button type="button" class="btn btn-primary">
+							Remainning Days <span class="badge text-bg-secondary bg-info">@allocation.NumberOfDays</span>
+						</button>
+					</div>
+				</div>
+			</li>
+		}
+	</ul>
+</div>
+
+<hr />
+
+
+<div class="accordion accordion-flush" id="accordionFlushExample">
+	@if (Model.LeaveRequests.Count == 0 && Model.LeaveRequestsHistory.Count == 0)
+	{
+		<div class="alert alert-danger" role="alert">
+			No data!
+		</div>
+	}
+
+	@if (Model.LeaveRequests.Count > 0)
+	{
+		<div class="accordion-item">
+			<h2 class="accordion-header">
+				<button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+					Pending Requests
+
+					<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						@Model.LeaveRequests.Count+
+						<span class="visually-hidden">unread messages</span>
+					</span>
+				</button>
+			</h2>
+			<div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+				<div class="accordion-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].StartDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].EndDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].NumberOfDays)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].LeaveType)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].DateRequested)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequests[0].Approved)
+								</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.LeaveRequests)
+							{
+								<tr>
+									<td>
+										@Html.DisplayFor(modelItem => item.StartDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.EndDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.NumberOfDays)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.LeaveType.Name)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.DateRequested)
+									</td>
+									<td>
+										@if (item.Cancelled)
+										{
+											<span class="badge bg-secondary">Cancelled</span>
+										}
+										else if (item.Approved == null)
+										{
+											<span class="badge bg-warning">Pending</span>
+										}
+										else if (item.Approved.Value)
+										{
+											<span class="badge bg-success">Approve</span>
+										}
+										else if (item.Approved.Value == false)
+										{
+											<span class="badge bg-danger">Rejected</span>
+										}
+									</td>
+									<td>
+										@if (!item.Cancelled)
+										{
+											<form id="cancelRequestForm" asp-action="CancelLeaveRequest">
+												<input type="hidden" id="requestId" name="Id" />
+												<button data-id="@item.Id" class="btn btn-danger btn-sm cancelRequestBtn" type="button">Cancel Request</button>
+											</form>
+										}
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+	}
+	@if (Model.LeaveRequestsHistory.Count > 0)
+	{
+		<div class="accordion-item">
+			<h2 class="accordion-header">
+				<button class="accordion-button collapsed bg-info" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+					Histories Requests
+					@if (Model.LeaveRequests.Count > 0)
+					{
+						<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+							@Model.LeaveRequestsHistory.Count+
+							<span class="visually-hidden">unread messages</span>
+						</span>
+					}
+				</button>
+			</h2>
+			<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+				<div class="accordion-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].StartDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].EndDate)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].NumberOfDays)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].LeaveType)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].DateRequested)
+								</th>
+								<th>
+									@Html.DisplayNameFor(model => model.LeaveRequestsHistory[0].Approved)
+								</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model.LeaveRequestsHistory)
+							{
+								<tr>
+									<td>
+										@Html.DisplayFor(modelItem => item.StartDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.EndDate)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.NumberOfDays)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.LeaveType.Name)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.DateRequested)
+									</td>
+									<td>
+										@if (item.Cancelled)
+										{
+											<span class="badge bg-secondary">Cancelled</span>
+										}
+										else if (item.Approved == null)
+										{
+											<span class="badge bg-warning">Pending</span>
+										}
+										else if (item.Approved.Value)
+										{
+											<span class="badge bg-success">Approve</span>
+										}
+										else if (item.Approved.Value == false)
+										{
+											<span class="badge bg-danger">Rejected</span>
+										}
+									</td>
+									<td>
+										@if (item.Approved == null)
+										{
+											<form id="cancelHistForm" asp-action="CancelLeaveRequest">
+												<input type="hidden" id="requestId" name="Id" />
+												<button data-id="@item.Id" class="btn btn-danger btn-sm cancelHistBtn" type="button">Cancel Request</button>
+											</form>
+										}
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	}
+</div>
+
+@section Scripts {
+	<script>
+		$(function () {
+			$('.cancelRequestBtn').click(function (e) {
+				swal({
+					title: "Are you sure?",
+					text: "Are you sure you want to cancel this request?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true
+				}).then((confirm) => {
+					if (confirm) {
+						var btn = $(this);
+						var id = btn.data("id");
+						$('#requestId').val(id);
+						$('#cancelRequestForm').submit();
+					}
+				});
+			});
+
+			$('.cancelHistBtn').click(function (e) {
+				swal({
+					title: "Are you sure?",
+					text: "Are you sure you want to cancel this request history?",
+					icon: "warning",
+					buttons: true,
+					dangerMode: true
+				}).then((confirm) => {
+					if (confirm) {
+						var btn = $(this);
+						var id = btn.data("id");
+						$('#requestId').val(id);
+						$('#cancelHistForm').submit();
+					}
+				});
+			});
+		});
+	</script>
+}
