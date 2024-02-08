@@ -14,12 +14,19 @@ namespace LeaveManagement.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
 		private readonly ILeaveAllocationRepository _leaveAllocationRepository;
+		private readonly ILogger<LeaveRequestsController> _logger;
 
-		public LeaveRequestsController(ApplicationDbContext context, ILeaveRequestRepository leaveRequestRepository, ILeaveAllocationRepository leaveAllocationRepository)
+		public LeaveRequestsController(
+            ApplicationDbContext context, 
+            ILeaveRequestRepository leaveRequestRepository, 
+            ILeaveAllocationRepository leaveAllocationRepository,
+            ILogger<LeaveRequestsController> logger
+        )
         {
             _context = context;
             _leaveRequestRepository = leaveRequestRepository;
 			_leaveAllocationRepository = leaveAllocationRepository;
+			_logger = logger;
 		}
 
         [Authorize(Roles = Roles.Administrator)]
@@ -56,10 +63,10 @@ namespace LeaveManagement.Web.Controllers
             {
 				await _leaveRequestRepository.ChangeApprovalStatus(id, approved);
 			}
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                _logger.LogError(ex, "Error Approving Request");
+				throw;
             }
 
             return RedirectToAction(nameof(Index));
@@ -92,9 +99,10 @@ namespace LeaveManagement.Web.Controllers
                     ModelState.AddModelError(string.Empty,  "You Have Exceeded Your Allocation With This Request.");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "An Error Has Ocurred. Please Try Again Later");
+				_logger.LogError(ex, "Error Creating Leave Request");
+				ModelState.AddModelError(string.Empty, "An Error Has Ocurred. Please Try Again Later");
             }
     
             model.LeaveTypes = new SelectList(_context.LeaveTypes, "Id", "Name", model.LeaveTypeId);
@@ -110,8 +118,9 @@ namespace LeaveManagement.Web.Controllers
 			{
 				await _leaveRequestRepository.CancelLeaveRequest(id);
 			}
-			catch
+			catch (Exception ex)
 			{
+				_logger.LogError(ex, "Error Canceling Leave Request");
 				throw;
 			}
 

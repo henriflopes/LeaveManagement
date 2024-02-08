@@ -26,6 +26,8 @@ namespace LeaveManagement.Web.Controllers
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
+            throw new Exception("Testing the logging");
+
             var leaveTypes = _mapper.Map<List<LeaveTypeVM>>(await _leaveTypeRepository.GetAllAsync());
             return View(leaveTypes);
         }
@@ -90,12 +92,18 @@ namespace LeaveManagement.Web.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+			var leaveType = await _leaveTypeRepository.GetAsync(id);
+
+            if (leaveType == null) 
+            {
+				return NotFound();
+			}
+
+			if (ModelState.IsValid)
             {
                 try
                 {
-                    var leaveType = _mapper.Map<LeaveType>(leaveTypeVM);
-
+                    _mapper.Map(leaveTypeVM, leaveType);
                     await _leaveTypeRepository.UpdateAsync(leaveType);
                 }
                 catch (DbUpdateConcurrencyException)
