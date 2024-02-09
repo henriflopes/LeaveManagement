@@ -7,3 +7,6 @@
 
 	Fonts:
 		https://fontawesome.com/search
+		
+	Hosts File:
+		C:\Windows\System32\drivers\etc
