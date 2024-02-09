@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagement.Data", "Lea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagement.Common", "LeaveManagement.Common\LeaveManagement.Common.csproj", "{C5FE4431-5458-4599-AF35-FC13131A77BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeaveManagement.Application", "LeaveManagement.Application\LeaveManagement.Application.csproj", "{982971D4-2A40-4C91-BABA-7863B307C983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeaveManagement.Application", "LeaveManagement.Application\LeaveManagement.Application.csproj", "{982971D4-2A40-4C91-BABA-7863B307C983}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

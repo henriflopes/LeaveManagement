@@ -8,6 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\assets\.DS_Store" />
+    <None Include="wwwroot\assets\images\.DS_Store" />
+    <None Include="wwwroot\assets\plugins\.DS_Store" />
+    <None Include="wwwroot\assets\plugins\bootstrap\dist\.DS_Store" />
+    <None Include="wwwroot\images\.DS_Store" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <PackageReference Include="AutoMapper" Version="13.0.1" />
 
 	  <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.1" />

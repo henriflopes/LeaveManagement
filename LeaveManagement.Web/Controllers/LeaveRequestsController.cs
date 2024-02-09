@@ -5,6 +5,7 @@ using LeaveManagement.Common.Models;
 using LeaveManagement.Application.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using LeaveManagement.Common.Constants;
+using LeaveManagement.Application.Repositories;
 
 namespace LeaveManagement.Web.Controllers
 {
@@ -14,19 +15,22 @@ namespace LeaveManagement.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly ILeaveRequestRepository _leaveRequestRepository;
 		private readonly ILeaveAllocationRepository _leaveAllocationRepository;
-		private readonly ILogger<LeaveRequestsController> _logger;
+        private readonly ILeaveTypeRepository _leaveTypeRepository;
+        private readonly ILogger<LeaveRequestsController> _logger;
 
 		public LeaveRequestsController(
             ApplicationDbContext context, 
             ILeaveRequestRepository leaveRequestRepository, 
             ILeaveAllocationRepository leaveAllocationRepository,
+            ILeaveTypeRepository leaveTypeRepository,
             ILogger<LeaveRequestsController> logger
         )
         {
             _context = context;
             _leaveRequestRepository = leaveRequestRepository;
 			_leaveAllocationRepository = leaveAllocationRepository;
-			_logger = logger;
+            _leaveTypeRepository = leaveTypeRepository;
+            _logger = logger;
 		}
 
         [Authorize(Roles = Roles.Administrator)]
@@ -73,10 +77,12 @@ namespace LeaveManagement.Web.Controllers
         }
 
         // GET: LeaveRequests/Create
-        public IActionResult CreateAsync()
+        public async Task<IActionResult> CreateAsync()
         {
+            var userLeaveTypes = await _leaveTypeRepository.GetLeaveTypeByLoggedInUserAsync();
+
             var model = new LeaveRequestCreateVM {
-                LeaveTypes = new SelectList(_context.LeaveTypes, "Id", "Name")
+                LeaveTypes = new SelectList(userLeaveTypes, "Id", "Name")
             };
 
 			return View(model);

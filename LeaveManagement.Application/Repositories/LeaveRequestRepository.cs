@@ -157,8 +157,8 @@ namespace LeaveManagement.Application.Repositories
 
 			allRequests.ForEach(q => { q.NumberOfDays = (int)((q.EndDate.Value - q.StartDate.Value).TotalDays) + 1; });
 
-			var requests = allRequests.Where(q => q.Approved == null).ToList();
-			var requestsHistories = allRequests.Where(q => q.Approved != null).ToList();
+			var requests = allRequests.Where(q => q.Approved == null && q.Cancelled == false).ToList();
+			var requestsHistories = allRequests.Where(q => q.Approved != null || q.Cancelled == true).ToList();
 
 			requestsHistories.ForEach(q => { q.HideCancelButton = true; });
 

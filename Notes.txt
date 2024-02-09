@@ -1,0 +1,9 @@
+
+	Layouts (Free):
+		https://adminlte.io/
+		
+	Log Observability:
+		https://datalust.co/seq
+
+	Fonts:
+		https://fontawesome.com/search
