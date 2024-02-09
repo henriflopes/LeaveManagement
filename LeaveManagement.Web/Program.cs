@@ -6,7 +6,7 @@ using LeaveManagement.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Serilog;
+using Serilog; 
 
 var builder = WebApplication.CreateBuilder(args);
 
