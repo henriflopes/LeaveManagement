@@ -28,6 +28,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
 builder.Services.AddScoped<ILeaveAllocationRepository, LeaveAllocationRepository>();
 builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
@@ -36,6 +37,8 @@ builder.Host.UseSerilog((context, lc) =>
     .ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 

@@ -10,3 +10,7 @@
 		
 	Hosts File:
 		C:\Windows\System32\drivers\etc
+		
+	Publish SQL Database Manually - Package Manager Console
+		Script-Migration -Idempotent (Use this script)
+		Script-Migration
