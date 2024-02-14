@@ -1,25 +1,32 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Net.Mail;
 
-namespace LeaveManagement.Web.Services
+namespace LeaveManagement.Common.Services
 {
 	public class EmailSender : IEmailSender
 	{
 		private string _smtpServer;
 		private int _smtpPort;
 		private string _fromEmailAddress;
+		private readonly bool _serviceStatus;
 
-		public EmailSender(string smtpServer, int smtpPort, string fromEmailAddress)
+		public EmailSender(string smtpServer, int smtpPort, string fromEmailAddress, bool serviceStatus)
 		{
 			_smtpServer = smtpServer;
 			_smtpPort = smtpPort;
 			_fromEmailAddress = fromEmailAddress;
+			_serviceStatus = serviceStatus;
 		}
 
 		public Task SendEmailAsync(string email, string subject, string htmlMessage)
 		{
-			var message = new MailMessage { 
+			if (_serviceStatus == false)
+			{
+				return Task.CompletedTask;
+			}
+
+			var message = new MailMessage
+			{
 				From = new MailAddress(_fromEmailAddress),
 				Subject = subject,
 				Body = htmlMessage,

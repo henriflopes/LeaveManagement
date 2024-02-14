@@ -5,7 +5,7 @@ using AutoMapper;
 using LeaveManagement.Common.Models;
 using LeaveManagement.Application.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using LeaveManagement.Web.Constants;
+using LeaveManagement.Common.Constants;
 
 namespace LeaveManagement.Web.Controllers
 {

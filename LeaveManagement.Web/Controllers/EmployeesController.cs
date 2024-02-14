@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LeaveManagement.Web.Constants;
 using LeaveManagement.Application.Contracts;
 using LeaveManagement.Data;
 using LeaveManagement.Common.Models;

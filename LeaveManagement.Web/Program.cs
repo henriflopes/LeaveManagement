@@ -2,11 +2,12 @@ using LeaveManagement.Application.Configurations;
 using LeaveManagement.Application.Contracts;
 using LeaveManagement.Application.Repositories;
 using LeaveManagement.Data;
-using LeaveManagement.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Serilog; 
+using Serilog;
+using LeaveManagement.Common.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,13 @@ builder.Services.AddDefaultIdentity<Employee>(options => options.SignIn.RequireC
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddTransient<IEmailSender>(s => new EmailSender("localhost", 25, "no-reply@leavemanagement.com"));
+builder.Services.AddTransient<IEmailSender>(s => new EmailSender(
+                                                    "localhost", 
+                                                    25, 
+                                                    "no-reply@leavemanagement.com", 
+                                                    Convert.ToBoolean(builder.Configuration.GetSection("EmailSenderStatus").Value)
+                                                )
+                                            );
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
